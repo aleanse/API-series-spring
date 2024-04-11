@@ -1,13 +1,12 @@
 package br.com.aleanse.clonenetflix.principal;
 
-import br.com.aleanse.clonenetflix.model.DadoSerie;
-import br.com.aleanse.clonenetflix.model.DadosEpisodio;
-import br.com.aleanse.clonenetflix.model.DadosEpisodios;
-import br.com.aleanse.clonenetflix.model.DadosTemporadas;
+import br.com.aleanse.clonenetflix.model.*;
 import br.com.aleanse.clonenetflix.service.ConsumoApi;
 import br.com.aleanse.clonenetflix.service.ConverteDados;
 import org.apache.logging.log4j.util.PropertySource;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -54,6 +53,30 @@ public class Principal {
                 .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
                 .sorted(Comparator.comparing(DadosEpisodios::avaliacao).reversed())
                 .limit(5).forEach(System.out::println);
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream().map(d -> new Episodio(t.numero(),d))
+                ).collect(Collectors.toList());
+
+        episodios.forEach(System.out::println);
+        System.out.println("a partir de que ano voce deseja ver os episodios");
+        var ano = leitura.nextInt();
+        leitura.nextLine();
+
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        LocalDate dataBusca = LocalDate.of(ano,1,1);
+        episodios.stream()
+                .filter(e -> e.getDataLancamento() != null && e.getDataLancamento().isAfter(dataBusca))
+                .forEach(e -> System.out.println(
+                        "Temporada: " + e.getTemporada() +
+                                " Episódio: " + e.getTitulo() +
+                                " Data lançamento: " + e.getDataLancamento()
+                ));
+        System.out.println("digite um trecho do titulo do episodio");
+        var trechoTitulo = leitura.nextLine();
+        episodios.stream()
+                .filter(e -> e.getTitulo().contains(trechoTitulo))
+                .findFirst();
     }
 
 
