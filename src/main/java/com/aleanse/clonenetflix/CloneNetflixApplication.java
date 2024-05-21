@@ -15,7 +15,8 @@ public class CloneNetflixApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		ConsumoApi consumoApi = new ConsumoApi();
-		String json = consumoApi.obterDados();
+		String json = consumoApi.obterDados("https://www.omdbapi.com/?t=avengers&apikey=7c3783a2");
+		System.out.println(json);
 
 	}
 
