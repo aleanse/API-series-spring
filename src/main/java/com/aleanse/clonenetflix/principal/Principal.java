@@ -31,7 +31,14 @@ public class Principal {
 			DadoTemporada dadoTemporada = conversor.obterDados(json,DadoTemporada.class);
 			temporadaLista.add(dadoTemporada);
 		}
-		temporadaLista.forEach(System.out::println);
+        temporadaLista.forEach(System.out::println);
+        for(int i=0; i < dadoSerie.totalTemporadas(); i++){
+            List<DadoEpisodio> episodiosTemporadas = temporadaLista.get(i).episodios();
+            for(int j = 0; j < episodiosTemporadas.size(); j++){
+                System.out.println(episodiosTemporadas.get(j).titulo());
+            }
+        }
+
 
 
     }
