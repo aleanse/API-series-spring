@@ -2,13 +2,13 @@ package com.aleanse.clonenetflix.principal;
 import com.aleanse.clonenetflix.models.DadoEpisodio;
 import com.aleanse.clonenetflix.models.DadoSerie;
 import com.aleanse.clonenetflix.models.DadoTemporada;
+import com.aleanse.clonenetflix.models.Episodio;
 import com.aleanse.clonenetflix.service.ConsumoApi;
 import com.aleanse.clonenetflix.service.ConverteDados;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Principal {
     private Scanner leitura = new Scanner(System.in);
@@ -19,6 +19,8 @@ public class Principal {
     private final String API_KEY = "&apikey=7c3783a2";
 
     public void exibeMenu() throws JsonProcessingException {
+
+
         System.out.println("digite o nome da serie para buscar");
         String nomeSerie = leitura.nextLine();
 
@@ -38,8 +40,34 @@ public class Principal {
                 System.out.println(episodiosTemporadas.get(j).titulo());
             }
         }
+        List<DadoEpisodio> dadoEpisodios = temporadaLista.stream()
+                .flatMap(t -> t.episodios().stream())
+                .collect(Collectors.toList());
 
 
 
+
+        dadoEpisodios.stream()
+                .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(DadoEpisodio::avaliacao).reversed())
+                .limit(5).forEach(System.out::println);
+
+
+        List<Episodio> episodios =  temporadaLista.stream()
+                .flatMap(t -> t.episodios().stream()
+                        .map(d -> new Episodio(t.numero(),d))).collect(Collectors.toList());
+        System.out.println("digite um trecho do titulo do episodio");
+        String trechoTitulo = leitura.nextLine();
+        Optional<Episodio> episodioBuscado = episodios.stream()
+                .filter(e -> e.getTitulo().toUpperCase().contains(trechoTitulo.toUpperCase()))
+                .findFirst();
+
+        if (episodioBuscado.isPresent()){
+            System.out.println("Episodio encontrado");
+            System.out.println(episodioBuscado.get().getTemporada());
+        }else{
+            System.out.println("Episodio não encontrado");
+
+        }
     }
 }
