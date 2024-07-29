@@ -1,8 +1,5 @@
 package com.aleanse.clonenetflix.principal;
-import com.aleanse.clonenetflix.models.DadoEpisodio;
-import com.aleanse.clonenetflix.models.DadoSerie;
-import com.aleanse.clonenetflix.models.DadoTemporada;
-import com.aleanse.clonenetflix.models.Episodio;
+import com.aleanse.clonenetflix.models.*;
 import com.aleanse.clonenetflix.service.ConsumoApi;
 import com.aleanse.clonenetflix.service.ConverteDados;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -77,7 +74,10 @@ public class Principal {
         temporadas.forEach(System.out::println);
     }
     private void listarSeriesBuscadas(){
-        dadoSeries.forEach(System.out::println);
+        List<Serie> series = new ArrayList<>();
+       series =  dadoSeries.stream().map(d -> new Serie(d) )
+                        .collect(Collectors.toList());
+       series.stream().sorted(Comparator.comparing(Serie::getGenero)).forEach(System.out::println);
     }
 
 
