@@ -1,8 +1,10 @@
 package com.aleanse.clonenetflix.principal;
 import com.aleanse.clonenetflix.models.*;
+import com.aleanse.clonenetflix.repository.SerieRepository;
 import com.aleanse.clonenetflix.service.ConsumoApi;
 import com.aleanse.clonenetflix.service.ConverteDados;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,6 +17,15 @@ public class Principal {
     private final String ENDERECO = "https://www.omdbapi.com/?t=";
     private final String API_KEY = "&apikey=7c3783a2";
     private List<DadoSerie> dadoSeries = new ArrayList<>();
+
+    private SerieRepository repositorio;
+
+   public Principal( SerieRepository repositorio){
+
+        this.repositorio = repositorio;
+
+    }
+
 
     public void exibeMenu() throws JsonProcessingException {
         int opcao = -1;
@@ -50,7 +61,8 @@ public class Principal {
 
     private void buscarSerieWeb() throws JsonProcessingException {
         DadoSerie dados = getDadosSerie();
-        dadoSeries.add(dados);
+        Serie serie =  new Serie(dados);
+        repositorio.save(serie);
         System.out.println(dados);
     }
 

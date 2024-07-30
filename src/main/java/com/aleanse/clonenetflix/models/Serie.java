@@ -1,17 +1,42 @@
 package com.aleanse.clonenetflix.models;
 
 import com.aleanse.clonenetflix.service.traducao.ConsultaMyMemory;
+import jakarta.persistence.*;
+import org.springframework.context.annotation.Primary;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
 
+
+@Entity
+@Table(name = "series")
 public class Serie {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
     private String titulo;
     private Integer totalTemporadas;
     private Double avaliacao;
     private String sinopse;
     private String atores;
     private String poster;
+    @Enumerated(EnumType.STRING)
     private Categoria genero;
+
+    @Transient
+    private List<Episodio> episodios = new ArrayList<>();
+
+    public List<Episodio> getEpisodios() {
+        return episodios;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        this.episodios = episodios;
+    }
 
     public Serie(DadoSerie dadoSerie){
         this.titulo = dadoSerie.titulo();
@@ -21,6 +46,15 @@ public class Serie {
         this.atores = dadoSerie.atores();
         this.poster = dadoSerie.poster();
         this.sinopse = ConsultaMyMemory.obterTraducao(dadoSerie.sinopse().trim()) ;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitulo() {
