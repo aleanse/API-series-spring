@@ -27,10 +27,15 @@ public class Serie {
     @Enumerated(EnumType.STRING)
     private Categoria genero;
 
-    @Transient
+    @OneToMany(mappedBy = "serie")
     private List<Episodio> episodios = new ArrayList<>();
 
+
+
+
+
     public List<Episodio> getEpisodios() {
+
         return episodios;
     }
 
@@ -38,6 +43,10 @@ public class Serie {
         this.episodios = episodios;
     }
 
+
+    public Serie(){
+
+    }
     public Serie(DadoSerie dadoSerie){
         this.titulo = dadoSerie.titulo();
         this.totalTemporadas = dadoSerie.totalTemporadas();

@@ -20,6 +20,8 @@ public class Principal {
 
     private SerieRepository repositorio;
 
+    private List<Serie> series = new ArrayList<>();
+
    public Principal( SerieRepository repositorio){
 
         this.repositorio = repositorio;
@@ -75,20 +77,29 @@ public class Principal {
     }
 
     private void buscarEpisodioPorSerie() throws JsonProcessingException {
-        DadoSerie dadosSerie = getDadosSerie();
-        List<DadoTemporada> temporadas = new ArrayList<>();
+        System.out.println("Escolha uma serie pelo nome:");
+        var nomeSerie = leitura.nextLine();
+        Optional<Serie> serie = series.stream().filter(s -> s.getTitulo().toLowerCase().contains(nomeSerie.toLowerCase())).findFirst();
+        if(serie.isPresent()){
+            var serieEncontrada = serie.get();
+            List<DadoTemporada> temporadas = new ArrayList<>();
 
-        for (int i = 1; i <= dadosSerie.totalTemporadas(); i++) {
-            var json = consumo.obterDados(ENDERECO + dadosSerie.titulo().replace(" ", "+") + "&season=" + i + API_KEY);
-            DadoTemporada dadosTemporada = conversor.obterDados(json, DadoTemporada.class);
-            temporadas.add(dadosTemporada);
+            for (int i = 1; i <= serieEncontrada.getTotalTemporadas(); i++) {
+                var json = consumo.obterDados(ENDERECO + serieEncontrada.getTitulo().replace(" ", "+") + "&season=" + i + API_KEY);
+                DadoTemporada dadosTemporada = conversor.obterDados(json, DadoTemporada.class);
+                temporadas.add(dadosTemporada);
+            }
+            temporadas.forEach(System.out::println);
+            List<Episodio> episodios = temporadas.stream().flatMap(d -> d.episodios().stream().map(e -> new Episodio(d.numero(), e))).collect(Collectors.toList());
+            serieEncontrada.setEpisodios(episodios);
+            repositorio.save(serieEncontrada);
+        }else {
+            System.out.println("Série não encontrada!");
         }
-        temporadas.forEach(System.out::println);
+
     }
     private void listarSeriesBuscadas(){
-        List<Serie> series = new ArrayList<>();
-       series =  dadoSeries.stream().map(d -> new Serie(d) )
-                        .collect(Collectors.toList());
+       series = repositorio.findAll();
        series.stream().sorted(Comparator.comparing(Serie::getGenero)).forEach(System.out::println);
     }
 
