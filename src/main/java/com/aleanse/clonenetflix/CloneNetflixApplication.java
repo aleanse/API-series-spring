@@ -8,23 +8,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CloneNetflixApplication implements CommandLineRunner {
+public class CloneNetflixApplication{
 
-	@Autowired
-	private SerieRepository repositorio;
+
 
 	public static void main(String[] args) {
 
 		SpringApplication.run(CloneNetflixApplication.class, args);
 	}
-	@Override
-	public void run(String... args) throws Exception {
-		Principal principal = new Principal(repositorio);
-		principal.exibeMenu();
 
-
-
-
-	}
 
 }
