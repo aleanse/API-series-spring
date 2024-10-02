@@ -24,13 +24,9 @@ public class SerieService {
 
     }
     public List<SerieDTO> obterTop5Series(){
-
         return converteDados( repository.findTop5ByOrderByAvaliacaoDesc());
-
     }
-
     public List<SerieDTO> obterLancamentos() {
-
         return converteDados(repository. top5SeriePorDataDeLancamento());
     }
 
@@ -53,17 +49,14 @@ public class SerieService {
         if (serie.isPresent()){
             Serie s = serie.get();
             List<EpisodioDTO> episodio = s.getEpisodios().stream().map(e -> new EpisodioDTO(e.getTemporada(), e.getTitulo(), e.getNumeroEpisodio())).collect(Collectors.toList());
-
             return episodio;
         }else
             return null;
     }
-
     public List<EpisodioDTO> buscaTemporada(Long id, Long temp) {
         return repository.buscaPorTemporada(id, temp).stream().map(e -> new EpisodioDTO(e.getTemporada(), e.getTitulo(), e.getNumeroEpisodio())).collect(Collectors.toList());
 
     }
-
 
 
 

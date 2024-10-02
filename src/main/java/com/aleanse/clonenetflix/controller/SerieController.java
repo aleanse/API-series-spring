@@ -36,8 +36,6 @@ public class SerieController {
         return service.obterLancamentos();
 
     }
-
-
     @GetMapping("/{id}")
     public SerieDTO obterPorId(@PathVariable Long id ){
         return service.obterPorId(id);
